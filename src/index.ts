@@ -2,7 +2,6 @@ import express from "express";
 import http from "http";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { Connection, PublicKey } from "@solana/web3.js";
 import { Server } from "socket.io";
 import {
   addMessageIx,
@@ -32,10 +31,6 @@ import {
   setProcessingStatus,
 } from "../config";
 import { userModel } from "./model/user_manager";
-
-export const SOLANA_NETWORK =
-  "https://mainnet.helius-rpc.com/?api-key=e2aaf324-f61f-44af-8bf9-d3beab7a03a0";
-export const solConnection = new Connection(SOLANA_NETWORK, "confirmed");
 
 const app = express();
 const port = process.env.PORT || 3002;
@@ -344,15 +339,6 @@ app.post("/createGame", async (req, res) => {
   }
 });
 
-app.get('/test', async  (req,res) => {
-  try {
-    const result = await claimReward(new PublicKey('BwqXi8uH5coiGPdcVWABqQVycSVSBw2Fk5nensdF6NX4'), io)
-    res.send(JSON.stringify(result))
-  } catch (e) {
-    console.log(e)
-  }
-})
-
 app.post("/enterGame", async (req, res) => {
   try {
     const txId = req.body.txId as string;
@@ -439,28 +425,6 @@ app.get("/getBetCount", async (req, res) => {
   }
 });
 
-app.get("/getRecentGame", async (req, res) => {
-  try {
-    const pdaData = await getLastPdaIx();
-    if (!pdaData) return;
-    const pdaAddress = pdaData.pda;
-    let gameData: any;
-    if (pdaData.pda != "") {
-      gameData = await getResult(new PublicKey(pdaAddress));
-      // console.log(" --> getRecentGame:", gameData);
-    }
-    const result = {
-      pda: pdaData.pda,
-      endTimestamp: pdaData.endTime ? pdaData.endTime : 0,
-      players: gameData,
-    };
-    res.send(JSON.stringify(result ? result : -200));
-  } catch (e) {
-    console.log(e, ">>> Error");
-    res.send(JSON.stringify(-2));
-    return;
-  }
-});
 
 // server.listen(port, () => {
 //   console.log(`server is listening on ${port}`);
