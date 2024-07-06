@@ -9,15 +9,11 @@ import {
   getLastMsgIx,
   getLastPdaIx,
   getLastWinnerIx,
-  getResult,
   getTimesIx,
   getTotalSumIx,
   getTotalBetAmountAndPayoutIx,
   getUserIx,
   getUsersIx,
-  performTx,
-  claimReward,
-  getCoinflipAccounts,
   getLastHistoryIx,
   addHistoryIx
 } from "./script";
@@ -248,19 +244,6 @@ app.get("/getUsers", async (req, res) => {
   }
 });
 
-app.get("/getCoinflipPools", async (req, res) => {
-  try {
-    let result = await getCoinflipAccounts();
-
-    res.send(JSON.stringify(result));
-    return;
-  } catch (e) {
-    console.log(e, ">> error occured from getting coinflipData");
-    res.send(JSON.stringify(-1));
-    return;
-  }
-});
-
 app.get("/getTimes", async (req, res) => {
   try {
     let result = await getTimesIx();
@@ -310,105 +293,6 @@ app.get("/getWinners", async (req, res) => {
   } catch (e) {
     console.log(e, ">> error occured from receiving deposit request");
     res.send(JSON.stringify(-1));
-    return;
-  }
-});
-
-app.post("/createGame", async (req, res) => {
-  try {
-    const txId = req.body.txId as string;
-    const encodedTx = req.body.encodedTx as string;
-    if (!encodedTx)
-        return res.status(400).json({error: "Invalid Request"});
-    if (!txId) {
-      res.send(JSON.stringify(-100));
-      return;
-    }
-
-    io.emit("gameStarting", 0);
-    console.log(txId);
-
-    betCounter++;
-
-    const result = await performTx(txId, encodedTx, io);
-    res.send(JSON.stringify(result ? 0 : -200));
-  } catch (e) {
-    console.log(e, ">>> Error");
-    res.send(JSON.stringify(-2));
-    return;
-  }
-});
-
-app.post("/enterGame", async (req, res) => {
-  try {
-    const txId = req.body.txId as string;
-    const encodedTx = req.body.encodedTx as string;
-
-    console.log(txId);
-    if (!encodedTx)
-        return res.status(400).json({error: "Invalid Request"});
-
-    if (!txId) {
-      res.send(JSON.stringify(-100));
-      return;
-    }
-    betCounter++;
-    const result = await performTx(txId, encodedTx, io);
-    res.send(JSON.stringify(result ? 0 : -200));
-  } catch (e) {
-    console.log(e, ">>> Error");
-    res.send(JSON.stringify(-2));
-    return;
-  }
-});
-
-app.post("/coinflip", async (req, res) => {
-  try {
-    const txId = req.body.txId as string;
-    const encodedTx = req.body.encodedTx as string;
-
-    console.log(txId);
-    if (!encodedTx)
-        return res.status(400).json({error: "Invalid Request"});
-
-    if (!txId) {
-      res.send(JSON.stringify(-100));
-      return;
-    }
-    const result = await performTx(txId, encodedTx, io);
-    res.send(JSON.stringify(result ? 0 : -200));
-  } catch (e) {
-    console.log(e, ">>> Error");
-    res.send(JSON.stringify(-2));
-    return;
-  }
-});
-
-app.post("/joinCoinflip", async (req, res) => {
-  try {
-    const txId = req.body.txId as string;
-    const encodedTx = req.body.encodedTx as string;
-    const pda = req.body.pda as string;
-    const player = req.body.player as string;
-    const number = req.body.number as number;
-    const mint = req.body.mint as string;
-    const amount = req.body.amount as number;
-
-    console.log(txId);
-    if (!encodedTx)
-        return res.status(400).json({error: "Invalid Request"});
-
-    if (!txId) {
-      res.send(JSON.stringify(-100));
-      return;
-    }
-
-    io.emit("joiningCoinflip", pda, player, number, mint, amount);
-    const result = await performTx(txId, encodedTx, io);
-    res.send(JSON.stringify(result ? 0 : -200));
-  } catch (e) {
-    console.log(e, ">>> Error");
-    res.send(JSON.stringify(-2));
     return;
   }
 });
