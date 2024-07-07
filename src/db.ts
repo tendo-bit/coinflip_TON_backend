@@ -75,7 +75,7 @@ export const getLastMessage = async () => {
 
 export const getLastHistory = async () => {
   try {
-    const item = await historyModel.find().sort({ _id: -1 }).limit(20);
+    const item = await historyModel.find().sort({ _id: -1 }).limit(10);
     return item;
   } catch (error) {
     console.log("error in getLastMessage!");
@@ -96,7 +96,7 @@ export const getTopStreaks = async () => {
       }
 
       // Break the loop if we have collected 20 unique records
-      if (uniqueRecords.length === 20) {
+      if (uniqueRecords.length === 10) {
         break;
       }
     }
