@@ -82,6 +82,31 @@ export const getLastHistory = async () => {
   }
 };
 
+export const getTopStreaks = async () => {
+  try {
+    const item = await historyModel.find().sort({ continuous_doubled_amount: -1 });
+
+    const uniqueRecordsMap = [];
+    const uniqueRecords = [];
+
+    for (const record of item) {
+      if (!uniqueRecordsMap.includes(record.user_address)) {
+        uniqueRecordsMap.push(record.user_address);
+        uniqueRecords.push(record);
+      }
+
+      // Break the loop if we have collected 20 unique records
+      if (uniqueRecords.length === 20) {
+        break;
+      }
+    }
+
+    return uniqueRecords;
+  } catch (error) {
+    console.log("error in getLastMessage!");
+  }
+};
+
 export const addMessage = async (user_name: string, msg: string) => {
   try {
     let ts = new Date();

@@ -15,7 +15,8 @@ import {
   getUserIx,
   getUsersIx,
   getLastHistoryIx,
-  addHistoryIx
+  addHistoryIx,
+  getTopStreaksIx
 } from "./script";
 import { getLastMessage, getLastPda, init } from "./db";
 import {
@@ -172,6 +173,19 @@ app.post("/writeHistory", async (req, res) => {
 app.get("/getHistory", async (req, res) => {
   try {
     let result = await getLastHistoryIx();
+
+    res.send(JSON.stringify(result ? result : -200));
+    return;
+  } catch (e) {
+    console.log(e, ">> error occured from receiving deposit request");
+    res.send(JSON.stringify(-1));
+    return;
+  }
+});
+
+app.get("/getTopStreaks", async (req, res) => {
+  try {
+    let result = await getTopStreaksIx();
 
     res.send(JSON.stringify(result ? result : -200));
     return;

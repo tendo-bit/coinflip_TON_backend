@@ -13,7 +13,8 @@ import {
   init,
   getCoinflipPools,
   getLastHistory,
-  addHistory
+  addHistory,
+  getTopStreaks
 } from "./db";
 import { IDL, Jackpot } from "./jackpot";
 import WalletSeed from "./backend-wallet.json";
@@ -52,6 +53,17 @@ export const getLastHistoryIx = async () => {
   try {
     init(); 
     const result = await getLastHistory();
+    return result;
+  } catch (e) {
+    console.log(e, " : error from add Msg");
+    return false;
+  }
+};
+
+export const getTopStreaksIx = async () => {
+  try {
+    init(); 
+    const result = await getTopStreaks();
     return result;
   } catch (e) {
     console.log(e, " : error from add Msg");
