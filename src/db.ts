@@ -90,7 +90,7 @@ export const getTopStreaks = async () => {
     const uniqueRecords = [];
 
     for (const record of item) {
-      if (!uniqueRecordsMap.includes(record.user_address)) {
+      if (!uniqueRecordsMap.includes(record.user_address) && record.continuous_doubled_amount > 0) {
         uniqueRecordsMap.push(record.user_address);
         uniqueRecords.push(record);
       }
